@@ -13,8 +13,8 @@ fn convert_bit_to_u8(value: f32) -> u8 {
 }
 
 fn main() {
-    let im_height = 256;
-    let im_width = 256;
+    let im_width = 800;
+    let im_height = 600;
 
     let mut imgbuf = image::ImageBuffer::new(im_width, im_height);
 
@@ -32,5 +32,5 @@ fn main() {
   }
     
     imgbuf.save("src/rendered/image0.png").unwrap();
-    println!("Hello, world!");
+    println!("Render done!");
 }
