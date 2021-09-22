@@ -40,15 +40,6 @@ fn main() {
     let lower_left_corner = origin - horizontal/2.0 - vertical / 2.0 - Vector3::new(0.0, 0.0, focal_length);
 
     for (i, j, pixel) in imgbuf.enumerate_pixels_mut() {
-      // let r = (0.3 * x as f32) as u8;
-      // let r = ((i as f32 - 1.0) / (im_width as f32 - 1.0)) as f32;
-      // let g = (1.0 - (j as f32 - 1.0) / (im_height as f32 - 1.0)) as f32;
-      // let b = 0.25 as f32;
-      
-      // let r = convert_bit_to_u8(r);
-      // let g = convert_bit_to_u8(g);
-      // let b = convert_bit_to_u8(b);
-
       let u = (i as f32 - 1.0) / (im_width as f32 - 1.0) as f32; 
       let v = (1.0 - (j as f32 - 1.0) / (im_height as f32 - 1.0)) as f32;
       let dir = lower_left_corner + u*horizontal + v*vertical - origin;
