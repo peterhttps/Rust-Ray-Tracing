@@ -2,6 +2,12 @@ extern crate image;
 
 
 fn convert_bit_to_u8(value: f32) -> u8 {
+  if value > 255.0 {
+    return 255;
+  }
+  if value < 0.0 {
+    return 0;
+  }
   let max = 255.0;
   (max * value) as u8
 }
