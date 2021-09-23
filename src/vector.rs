@@ -30,15 +30,21 @@ impl Sphere {
   }
 }
 
-pub fn hit(sphere: Sphere, ray: Ray) -> bool {
-  let a = ray.direction.norm_squared();
-  let oc = sphere.center - ray.origin;
-  let b = 2.0 * ray.direction.dot(&oc);
-  let c = oc.norm_squared() - f32::powf(sphere.radius, 2.0);
-  let discriminant = b*b - 4.0*a*c;
+pub fn ray_at(ray: Ray, t: f32) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+  ray.origin + t * ray.direction
+}
 
-  if discriminant <= 0.0 {
-    return false;
+pub fn hit(sphere: Sphere, ray: Ray) -> f32 {
+  let a = ray.direction.norm_squared();
+  let oc = ray.origin - sphere.center;
+  let halfb = ray.direction.dot(&oc);
+  let c = oc.norm_squared() - f32::powf(sphere.radius, 2.0);
+  let discriminant = halfb*halfb - a*c;
+
+  if discriminant < 0.0 {
+    return -1.0;
+  } else {
+    let t = (-halfb - discriminant.sqrt()) / (a);  
+    return t;
   }
-  true
 }
