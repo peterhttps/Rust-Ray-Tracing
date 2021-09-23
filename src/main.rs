@@ -4,7 +4,7 @@ extern crate image;
 
 use std::f32;
 use nalgebra::{ArrayStorage, Matrix, U1, U3, Vector3};
-use vector::Ray;
+use vector::{Ray, Sphere, hit};
 
 fn convert_bit_to_u8(value: f32) -> u8 {
   if value > 255.0 {
@@ -17,9 +17,19 @@ fn convert_bit_to_u8(value: f32) -> u8 {
   (max * value) as u8
 }
 
-fn ray_color(ray: Ray) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
-  let t = 0.5 * (ray.direction.y + 1.0);
+
+fn background_color(dir: Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+  let t = 0.5 * (dir.y + 1.0);
   (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0)
+}
+
+fn ray_color(ray: Ray, sphere: Sphere) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+
+  if hit(sphere, ray) {
+    return Vector3::new(1.0, 0.0, 0.0);
+  }
+
+  background_color(ray.direction)
 }
 
 fn main() {
@@ -39,13 +49,15 @@ fn main() {
     let origin = Vector3::new(0.0, 0.0, 0.0);
     let lower_left_corner = origin - horizontal/2.0 - vertical / 2.0 - Vector3::new(0.0, 0.0, focal_length);
 
+    let s1 = Sphere::new(Vector3::new(0.0, 0.0, -1.0), 0.5);
+
     for (i, j, pixel) in imgbuf.enumerate_pixels_mut() {
       let u = (i as f32 - 1.0) / (im_width as f32 - 1.0) as f32; 
       let v = (1.0 - (j as f32 - 1.0) / (im_height as f32 - 1.0)) as f32;
       let dir = lower_left_corner + u*horizontal + v*vertical - origin;
       let ray = Ray::new(origin, dir);
 
-      let rayc = ray_color(ray);
+      let rayc = ray_color(ray, s1);
 
       let r = convert_bit_to_u8(rayc.x);
       let g = convert_bit_to_u8(rayc.y);
@@ -54,6 +66,6 @@ fn main() {
       *pixel = image::Rgb([r, g, b]);
   }
     
-    imgbuf.save("src/rendered/image1.png").unwrap();
+    imgbuf.save("src/rendered/image2.png").unwrap();
     println!("Render done!");
 }
