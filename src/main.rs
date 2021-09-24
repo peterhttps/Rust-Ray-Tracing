@@ -4,7 +4,9 @@ extern crate image;
 
 use std::f32;
 use nalgebra::{ArrayStorage, Matrix, U1, U3, Vector3};
-use vector::{Ray, Sphere, hit, ray_at, unitvector};
+use vector::{HitRecord, Ray, Sphere, scene_list_hit};
+
+use crate::vector::SceneList;
 
 fn convert_bit_to_u8(value: f32) -> u8 {
   if value > 255.0 {
@@ -23,17 +25,19 @@ fn background_color(dir: Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>) -> Matr
   (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0)
 }
 
-fn ray_color(ray: Ray, sphere: Sphere) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+fn ray_color(ray: Ray, scenelist: SceneList) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+  let mut record = HitRecord::default();
 
-  let t = hit(sphere, ray);
-  if t > 0.0 {
-    let p = ray_at(ray, t);
-    let normal = p - sphere.center;
-    let normal = normal as Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>;
-    let normal = unitvector(normal);
+  if scene_list_hit(scenelist, ray, 0.0,std::f32::INFINITY, &mut record) {
+    // let p = ray_at(ray, t);
+    // let normal = p - sphere.center;
+    // let normal = normal as Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>;
+    // let normal = unitvector(normal);
     
-    let ncolor = 0.5 * (normal + Vector3::new(1.0, 1.0, 1.0));
+    // let ncolor = 0.5 * (normal + Vector3::new(1.0, 1.0, 1.0));
     // println!("{}", ncolor);
+
+    let ncolor = 0.5 * (record.normal + Vector3::new(1.0, 1.0, 1.0));
 
     return ncolor;
   }
@@ -58,7 +62,13 @@ fn main() {
     let origin = Vector3::new(0.0, 0.0, 0.0);
     let lower_left_corner = origin - horizontal/2.0 - vertical / 2.0 - Vector3::new(0.0, 0.0, focal_length);
 
+    let big_radius: f32 = 1000.0;
     let s1 = Sphere::new(Vector3::new(0.0, 0.0, -1.0), 0.5);
+    let floor = Sphere::new(Vector3::new(0.0, -big_radius - 1.0, -1.0), big_radius);
+
+    let mut world = SceneList::new();
+    world.push(s1);
+    world.push(floor);
 
     for (i, j, pixel) in imgbuf.enumerate_pixels_mut() {
       let u = (i as f32 - 1.0) / (im_width as f32 - 1.0) as f32; 
@@ -66,7 +76,7 @@ fn main() {
       let dir = lower_left_corner + u*horizontal + v*vertical - origin;
       let ray = Ray::new(origin, dir);
 
-      let rayc = ray_color(ray, s1);
+      let rayc = ray_color(ray, world.clone());
 
       let r = convert_bit_to_u8(rayc.x);
       let g = convert_bit_to_u8(rayc.y);
@@ -75,6 +85,6 @@ fn main() {
       *pixel = image::Rgb([r, g, b]);
   }
     
-    imgbuf.save("src/rendered/image3.png").unwrap();
+    imgbuf.save("src/rendered/image4.png").unwrap();
     println!("Render done!");
 }
