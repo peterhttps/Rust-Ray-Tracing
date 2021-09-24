@@ -1,5 +1,9 @@
 <h1 align="center">Rust-Ray-Tracing</h1>
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/20236175/134610290-fc3b06d8-5222-4f2f-88b2-f44e6cfcc365.png" />
+</p>
+  
 ## Introduction
 A repo to learn how Ray tracing algorithms works and how to implement them. 
 Choosed Rust now for more resources control and speed. Note that I have the same algorithms implemented in python on this [repo](https://github.com/peterhttps/Python-Ray-Tracing)
@@ -10,9 +14,9 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 - [x] Output an image
 - [x] Casting rays into the scene
 - [x] Adding sphere and ray create a ray traced image
-- [ ] Shading with surface normals
-- [ ] Listing hitable objects
-- [ ] Creating objects with full reflection
+- [x] Shading with surface normals
+- [x] Listing hitable objects
+- [x] Creating objects with full reflection
 - [ ] Antialiasing
 - [ ] Improving data structure
 - [ ] Adding difuse materials
