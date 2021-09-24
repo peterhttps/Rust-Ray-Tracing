@@ -91,7 +91,7 @@ fn main() {
       *pixel = image::Rgb([r, g, b]);
     }
     
-    imgbuf.save("src/rendered/image6.png").unwrap();
+    imgbuf.save("src/rendered/image7.png").unwrap();
     let duration = start.elapsed();
     println!("Time elapsed: {:?}", duration);
     println!("Render done!");
