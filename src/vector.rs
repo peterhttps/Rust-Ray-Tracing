@@ -129,3 +129,7 @@ pub fn scene_list_hit(scenelist: SceneList, ray: Ray, t_min: f32, t_max: f32, re
 
   hit_anything
 }
+
+pub fn reflect(dir: Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>, normal: Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
+  dir - 2.0 * dir.dot(&normal) * normal
+}
