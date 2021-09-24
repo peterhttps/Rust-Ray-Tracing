@@ -30,6 +30,10 @@ impl Sphere {
   }
 }
 
+pub fn unitvector(v : Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>) ->  Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>{
+  v / v.norm()
+}
+
 pub fn ray_at(ray: Ray, t: f32) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
   ray.origin + t * ray.direction
 }

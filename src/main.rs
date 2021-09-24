@@ -4,7 +4,7 @@ extern crate image;
 
 use std::f32;
 use nalgebra::{ArrayStorage, Matrix, U1, U3, Vector3};
-use vector::{Ray, Sphere, hit, ray_at};
+use vector::{Ray, Sphere, hit, ray_at, unitvector};
 
 fn convert_bit_to_u8(value: f32) -> u8 {
   if value > 255.0 {
@@ -30,8 +30,7 @@ fn ray_color(ray: Ray, sphere: Sphere) -> Matrix<f32, U3, U1, ArrayStorage<f32, 
     let p = ray_at(ray, t);
     let normal = p - sphere.center;
     let normal = normal as Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>;
-    let normal = normal.as_ref();
-    let normal = Vector3::new(normal[0], normal[1], normal[2]);
+    let normal = unitvector(normal);
     
     let ncolor = 0.5 * (normal + Vector3::new(1.0, 1.0, 1.0));
     // println!("{}", ncolor);
