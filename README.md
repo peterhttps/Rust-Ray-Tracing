@@ -17,7 +17,7 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 - [x] Shading with surface normals
 - [x] Listing hitable objects
 - [x] Creating objects with full reflection
-- [ ] Antialiasing
+- [x] Antialiasing
 - [ ] Improving data structure
 - [ ] Adding difuse materials
 - [ ] Lambertian Reflection
