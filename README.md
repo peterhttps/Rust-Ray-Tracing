@@ -23,4 +23,16 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 - [ ] Lambertian Reflection
 - [ ] Metalic objects
 
+## How to run
+
+If you have cargo installed
+
+```bash
+// Build application
+$ cargo build
+
+// Run application
+$ cargo run
+```
+
 Main logic comes of book [Ray Tracing in one Weekend](https://raytracing.github.io/books/RayTracingInOneWeekend.html) and playlist [Programação Dinâmica - Computação Gráfica](https://www.youtube.com/playlist?list=PL5TJqBvpXQv5zNlgvgH2HGuhZHpnkT3oo)
