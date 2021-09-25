@@ -2,9 +2,10 @@ mod vector;
 
 extern crate image;
 
+use rand::Rng;
 use std::{f32, time::Instant};
 use nalgebra::{ArrayStorage, Matrix, U1, U3, Vector3};
-use vector::{HitRecord, Ray, Sphere, reflect, scene_list_hit, unitvector};
+use vector::{HitRecord, Ray, Sphere, scene_list_hit};
 
 use crate::vector::SceneList;
 
@@ -23,25 +24,27 @@ fn convert_bit_to_u8(value: f32) -> u8 {
 
 fn background_color(dir: Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>>) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
   let t = 0.5 * (dir.y + 1.0);
-  (1.0 - t) * Vector3::new(0.7, 0.8, 0.9) + t * Vector3::new(0.05, 0.05, 0.2)
+  (1.0 - t) * Vector3::new(1.0, 1.0, 1.0) + t * Vector3::new(0.5, 0.7, 1.0)
 }
 
 fn ray_color(ray: Ray, scenelist: SceneList) -> Matrix<f32, U3, U1, ArrayStorage<f32, U3, U1>> {
   let mut record = HitRecord::default();
 
-  let mut orgn = ray.origin;
-  let mut dir = ray.direction;
-  while scene_list_hit(scenelist.clone(), Ray::new(orgn, dir), 0.01,std::f32::INFINITY, &mut record) {
+  while scene_list_hit(scenelist.clone(), ray, 0.01,std::f32::INFINITY, &mut record) {
 
-    dir = unitvector(reflect(dir, record.normal));
-    orgn = record.p;
+    let color = 0.5 * (record.normal + Vector3::new(1.0 ,1.0, 1.0)); 
+
+
+    return color;
+    // dir = unitvector(reflect(dir, record.normal));
+    // orgn = record.p;
 
     // let ncolor = 0.5 * (record.normal + Vector3::new(1.0, 1.0, 1.0));
 
     // return ncolor;
   }
 
-  background_color(dir)
+  background_color(ray.direction)
 }
 
 fn main() {
@@ -63,31 +66,36 @@ fn main() {
 
     let big_radius: f32 = 1000.0;
     let s1 = Sphere::new(Vector3::new(0.0, 0.0, -1.0), 0.5);
-    let s2 = Sphere::new(Vector3::new(-1.5, 0.0, -2.0), 0.5);
-    let s3 = Sphere::new(Vector3::new(0.5, 1.25, -1.5), 0.5);
-    let s4 = Sphere::new(Vector3::new(1.5, 0.5, -2.0), 0.5);
     let floor = Sphere::new(Vector3::new(0.0, -big_radius - 0.5, -1.0), big_radius);
 
     let mut world = SceneList::new();
     world.push(s1);
-    world.push(s2);
-    world.push(s3);
-    world.push(s4);
+    // world.push(s2);
+    // world.push(s3);
+    // world.push(s4);
     world.push(floor);
+
+    let samples_per_pixel = 100;
+    let mut rng = rand::thread_rng();
+
 
     let start = Instant::now();
     for (i, j, pixel) in imgbuf.enumerate_pixels_mut() {
-      let u = (i as f32 - 1.0) / (im_width as f32 - 1.0) as f32; 
-      let v = (1.0 - (j as f32 - 1.0) / (im_height as f32 - 1.0)) as f32;
-      let dir = lower_left_corner + u*horizontal + v*vertical - origin;
-      let ray = Ray::new(origin, dir);
+      let mut pixelcolor = Vector3::new(0.0, 0.0, 0.0);
+      for n in 0..samples_per_pixel {
+        let u = (i as f32 - 1.0 + rng.gen::<f32>()) / (im_width as f32 - 1.0) as f32; 
+        let v = (1.0 - (j as f32 - 1.0 + rng.gen::<f32>()) / (im_height as f32 - 1.0)) as f32;
+        let dir = lower_left_corner + u*horizontal + v*vertical - origin;
+        let ray = Ray::new(origin, dir);
+  
+        pixelcolor += ray_color(ray, world.clone());
+      }
 
-      let rayc = ray_color(ray, world.clone());
+      pixelcolor = pixelcolor / samples_per_pixel as f32;
 
-      let r = convert_bit_to_u8(rayc.x);
-      let g = convert_bit_to_u8(rayc.y);
-      let b = convert_bit_to_u8(rayc.z);
-
+      let r = convert_bit_to_u8(pixelcolor.x);
+      let g = convert_bit_to_u8(pixelcolor.y);
+      let b = convert_bit_to_u8(pixelcolor.z);
       *pixel = image::Rgb([r, g, b]);
     }
     
