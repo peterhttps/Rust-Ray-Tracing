@@ -24,12 +24,12 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 - [ ] Metalic objects
 
 #### Performance 
-- [ ] Improve main for loops
+- [x] Improve main for loops
 - [ ] Clean code logic
 - [ ] Add paralel computation
 
 #### Utils
-- [ ] Add progress bar indicator
+- [x] Add progress bar indicator
 - [ ] Split files in a smart way
 
 ## How to run
