@@ -28,10 +28,10 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 If you have cargo installed
 
 ```bash
-// Build application
+# Build application
 $ cargo build
 
-// Run application
+# Run application
 $ cargo run
 ```
 
