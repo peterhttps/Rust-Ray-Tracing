@@ -26,7 +26,7 @@ Choosed Rust now for more resources control and speed. Note that I have the same
 #### Performance 
 - [x] Improve main for loops
 - [ ] Clean code logic
-- [ ] Add paralel computation
+- [ ] Add paralel computation on render
 
 #### Utils
 - [x] Add progress bar indicator
